@@ -46,6 +46,21 @@ public class MancalaBoard {
         return true;
     }
 
+    /**
+     * start opposite players turn
+     */
+    public void switchTurn() {
+
+
+        // rotate game board
+        int[] newStones = new int[14];
+        System.arraycopy(stones, 7, newStones, 0, 7);
+        System.arraycopy(stones, 0, newStones, 7, 7);
+
+        stones = newStones;
+
+    }
+
     public static void main(String[] args) {
         MancalaBoard b = new MancalaBoard();
         for (int i = 0; i < b.stones.length; i++) {
