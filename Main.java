@@ -1,3 +1,5 @@
+import javax.swing.*;
+
 public class Main {
 
     /**
@@ -6,21 +8,19 @@ public class Main {
      * @param args arguments passed to the program
      */
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            createAndShowGUI();
-        });
-    }
-
-    /**
-     * Create and display the GUI
-     */
-    public static void createAndShowGUI() {
         JFrame frame = new JFrame("Mancala");
+        frame.setSize(777, 500);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        //
+        MancalaBoard mb = new MancalaBoard();
 
-        frame.pack();
+        View v = new View(mb);
+
+        frame.add(v);
+
+
         frame.setVisible(true);
     }
+
+
 }

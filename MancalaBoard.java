@@ -1,15 +1,27 @@
+import java.awt.event.MouseListener;
+
 public class MancalaBoard {
 
 
-    private View view;
+    MouseListener l;
 
     //pitStones
     private int[] stones = new int[]{4, 4, 4, 4, 4, 4, 0, 4, 4, 4, 4, 4, 4, 0};
 
+    private int player = 1;
+
 
     public MancalaBoard() {
 
-        view = new View(this);
+
+    }
+
+    public void attach(MouseListener ml) {
+        l = ml;
+    }
+
+    public void update() {
+
     }
 
     /**
@@ -33,9 +45,13 @@ public class MancalaBoard {
         while (theStones > 0) {
             ++pointer;
 
-            // skip other player's storage pit and reset pointer
+            //  reset pointer
             if (pointer == 13) {
+                stones[pointer]++;
+                theStones--;
                 pointer = 0;
+                stones[pointer]++;
+                theStones--;
             } else {
                 stones[pointer]++;
                 theStones--;
@@ -43,7 +59,9 @@ public class MancalaBoard {
 
 
         }
+
         return true;
+
     }
 
     /**
@@ -58,7 +76,16 @@ public class MancalaBoard {
         System.arraycopy(stones, 0, newStones, 7, 7);
 
         stones = newStones;
+        if (player == 1) {
+            player = 2;
+        } else {
+            player = 1;
+        }
 
+    }
+
+    public int[] getData() {
+        return stones;
     }
 
     public static void main(String[] args) {
