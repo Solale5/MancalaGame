@@ -6,18 +6,23 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
 public class View extends JPanel implements ChangeListener {
-
+    private Color color;
     final int Padding = 15, padding2 = 30;
     final int pitWidth = 75, pitHeight = 90;
+
+
+    //helps determine if a color has been selected at the start of the game, if it is true, draw the board
+    boolean colorSelected;
 
 
     MancalaBoard mb;
 
     public View(MancalaBoard board) {
+        colorSelected = false;
         mb = board;
         this.addMouseListener(new MouseListener() {
             public void mouseClicked(MouseEvent e) {
-                BoardVisualizer board = new BoardVisualizer(mb);
+                BoardVisualizer board = new BoardVisualizer(mb, color);
                 int x, y;
                 int mx = e.getX();
                 int my = e.getY();
@@ -30,10 +35,13 @@ public class View extends JPanel implements ChangeListener {
                     // check if the click was inside the pit area.
                     if (mx > x && mx < x + board.pitWidth && my > y && my < y + board.pitHeight) {
                         mb.moveStones(pit);
-                        repaint();
+
                     }
                 }
+
+
             }
+
 
             public void mousePressed(MouseEvent e) {
 
@@ -51,35 +59,30 @@ public class View extends JPanel implements ChangeListener {
 
             }
         });
+
+    }
+
+    public void setColor(Color color) {
+        this.color = color;
     }
 
 
     protected void paintComponent(Graphics g) {
+
+
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g;
-//
-//        //prints out opposites players row
-//        int j = 1;
-//        for (int i = 13; i > 6; i--) {
-//            g2.draw(new Ellipse2D.Double(((Padding + pitWidth) * (i - 6)), 110, pitWidth, pitHeight));
-//            g2.draw(new Ellipse2D.Double(((Padding + pitWidth) * (i - 6) + 1), 110, pitWidth, pitHeight));
-//            g2.drawString(Integer.toString(mb.getData()[i]), ((Padding + pitWidth) * (j)) + padding2, 40);
-//            j++;
-//
-//        }
-        BoardVisualizer b = new BoardVisualizer(mb);
+
+        //if the color has been selected we draw the game / else draw color selection screen
+
+        BoardVisualizer b = new BoardVisualizer(mb, color);
         b.drawBoard(g);
-//
-        //prints out this players row
+
         for (int i = 0; i < 14; i++) {
 
-            g2.drawString(Integer.toString(mb.getData()[i]), b.getPitCenterX(i), b.getPitCenterY(i));
+            g2.drawString(Integer.toString(mb.getData()[i]), b.getPitCenterX(i) + 5, b.getPitCenterY(i) + 7);
         }
 
-//
-//        Rectangle2D.Double r = new Rectangle2D.Double(0, 0, 700, 210);
-//
-//        g2.draw(r);
 
     }
 
@@ -88,6 +91,7 @@ public class View extends JPanel implements ChangeListener {
     }
 
     class BoardVisualizer {
+
 
         final int outerPadding = 15, innerPadding = 20;
         final int pitWidth = 80, pitHeight = 80;
@@ -100,7 +104,8 @@ public class View extends JPanel implements ChangeListener {
          *
          * @param game instance of MancalaGame
          */
-        public BoardVisualizer(MancalaBoard game) {
+        public BoardVisualizer(MancalaBoard game, Color c) {
+            color = c;
             this.game = game;
 
         }
@@ -142,7 +147,7 @@ public class View extends JPanel implements ChangeListener {
             int resize = 20;
 
             // begin first mancala at padding position
-            g.setColor(Color.BLACK);
+            g.setColor(color);
             g.drawRoundRect(
                     outerPadding, outerPadding + resize,
                     storeWidth, storeHeight - resize * 2,
@@ -153,7 +158,7 @@ public class View extends JPanel implements ChangeListener {
              * plus the first mancala, plus padding */
             int x = outerPadding + storeWidth + 6 * (innerPadding + pitWidth);
 
-            g.setColor(Color.black);
+            g.setColor(color);
             g.drawRoundRect(
                     x, outerPadding + resize,
                     storeWidth, storeHeight - resize * 2,
@@ -171,10 +176,10 @@ public class View extends JPanel implements ChangeListener {
 
             int rowX = storeWidth + innerPadding * 2;
 
-            g.setColor(Color.BLACK);
+            g.setColor(color);
             drawRow(g, rowX, outerPadding);
 
-            g.setColor(Color.BLACK);
+            g.setColor(color);
             drawRow(g, rowX, outerPadding + pitHeight + innerPadding);
         }
 
