@@ -1,9 +1,10 @@
-import java.awt.event.MouseListener;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 public class MancalaBoard {
 
 
-    MouseListener l;
+    ChangeListener l;
 
     //pitStones
     private int[] stones = new int[]{4, 4, 4, 4, 4, 4, 0, 4, 4, 4, 4, 4, 4, 0};
@@ -16,13 +17,10 @@ public class MancalaBoard {
 
     }
 
-    public void attach(MouseListener ml) {
+    public void attach(ChangeListener ml) {
         l = ml;
     }
 
-    public void update() {
-
-    }
 
     /**
      * Perform a player's by automoving the stones
@@ -60,29 +58,11 @@ public class MancalaBoard {
 
         }
 
+        l.stateChanged(new ChangeEvent(this));
         return true;
 
     }
 
-    /**
-     * start opposite players turn
-     */
-    public void switchTurn() {
-
-
-        // rotate game board
-        int[] newStones = new int[14];
-        System.arraycopy(stones, 7, newStones, 0, 7);
-        System.arraycopy(stones, 0, newStones, 7, 7);
-
-        stones = newStones;
-        if (player == 1) {
-            player = 2;
-        } else {
-            player = 1;
-        }
-
-    }
 
     public int[] getData() {
         return stones;
