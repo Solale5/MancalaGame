@@ -14,7 +14,7 @@ public class Main {
         JTextArea jta = new JTextArea("Pick a board color");
 
         Button blue = new Button("Blue");
-        Button red = new Button("Red");
+        Button red = new Button("Green");
         Button black = new Button("Black");
 
 
@@ -26,6 +26,7 @@ public class Main {
 
         start.setSize(777, 500);
         start.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        start.setLocationRelativeTo(null);
         start.setVisible(true);
 
 
@@ -39,24 +40,40 @@ public class Main {
 
         frame.add(v);
         mb.attach(v);
+
+
         black.addActionListener(e -> {
-                    v.setColor(Color.black);
+                    BlackBoard b = new BlackBoard();
+                    v.setDesign(b);
+                    int x = start.getX();
+                    int y = start.getY();
+                    frame.setLocation(x, y);
+                    frame.setVisible(true);
                     start.setVisible(false);
 
-                    frame.setVisible(true);
 
                 }
         );
         blue.addActionListener(e -> {
-                    v.setColor(Color.blue);
-                    start.setVisible(false);
+                    BlueBoard bl = new BlueBoard();
+                    v.setDesign(bl);
+                    int x = start.getX();
+                    int y = start.getY();
+                    frame.setLocation(x, y);
                     frame.setVisible(true);
+                    start.setVisible(false);
+
                 }
         );
         red.addActionListener(e -> {
-                    v.setColor(Color.red);
-                    start.setVisible(false);
+                    GreenBoard gb = new GreenBoard();
+                    v.setDesign(gb);
+                    int x = start.getX();
+                    int y = start.getY();
+                    frame.setLocation(x, y);
                     frame.setVisible(true);
+
+                    start.setVisible(false);
                 }
         );
 

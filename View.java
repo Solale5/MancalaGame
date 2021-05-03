@@ -66,6 +66,10 @@ public class View extends JPanel implements ChangeListener {
         this.color = color;
     }
 
+    public void setDesign(Design d) {
+        setColor(d.getColor());
+    }
+
 
     protected void paintComponent(Graphics g) {
 
