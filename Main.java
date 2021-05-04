@@ -12,7 +12,7 @@ public class Main {
     public static void main(String[] args) {
         JFrame start = new JFrame("Mancala Starting Screen");
         start.setLayout(new FlowLayout());
-        JTextArea jta = new JTextArea("Pick a board color");
+        JLabel jta = new JLabel("Pick a board color");
         Button blue = new Button("Blue");
         Button red = new Button("Green");
         Button black = new Button("Black");
@@ -31,7 +31,7 @@ public class Main {
         View v = new View(mb);
         frame.add(v);
         mb.attach(v);
-    
+
 
         black.addActionListener(e -> {
                     BlackBoard b = new BlackBoard();
