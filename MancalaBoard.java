@@ -5,9 +5,11 @@ public class MancalaBoard {
     ChangeListener l;
     //pitStones
     private int[] stones;
+    private int[] prevStones;
     private int player = 1;
     private boolean p1turn;
     private boolean p2turn;
+    private boolean stonesMoved;
 
     public MancalaBoard() {
         stones = new int[]{4, 4, 4, 4, 4, 4, 0, 4, 4, 4, 4, 4, 4, 0};
@@ -19,6 +21,14 @@ public class MancalaBoard {
         l = ml;
     }
 
+    public int[] getPrevStones() {
+        return prevStones;
+    }
+
+    public void setStones(int[] array) {
+        stones = array;
+    }
+
     /**
      * Perform a player's turn by automoving the stones
      *
@@ -26,7 +36,9 @@ public class MancalaBoard {
      * @return whether the user's turn is ended
      */
     protected boolean moveStones(int slot) {
+        stonesMoved = true;
         int pointer = slot;
+        prevStones = stones.clone();
         // returns if slot is empty
         if (stones[slot] < 1) {
             return true;
@@ -59,6 +71,15 @@ public class MancalaBoard {
             }
         }
         l.stateChanged(new ChangeEvent(this));
+        return true;
+    }
+
+    public boolean stonesMoved() {
+        return stonesMoved;
+    }
+
+    public void switchTurn() {
+        stonesMoved = false;
         //After every turn the player's turn changes
         if (p1turn) {
             player = 2;
@@ -69,7 +90,7 @@ public class MancalaBoard {
             p1turn = true;
             p2turn = false;
         }
-        return true;
+        l.stateChanged(new ChangeEvent(this));
     }
 
     public int whichTurn() {
