@@ -10,6 +10,7 @@ public class View extends JPanel implements ChangeListener {
     private Color color;
     final int Padding = 15, padding2 = 30;
     final int pitWidth = 75, pitHeight = 90;
+    private static int undoCounter;
 
 
     //helps determine if a color has been selected at the start of the game, if it is true, draw the board
@@ -21,6 +22,8 @@ public class View extends JPanel implements ChangeListener {
     public View(MancalaBoard board) {
         colorSelected = false;
         mb = board;
+        setLayout(new BorderLayout());
+
         this.addMouseListener(new MouseListener() {
             public void mouseClicked(MouseEvent e) {
                 BoardVisualizer board = new BoardVisualizer(mb, color);
@@ -60,7 +63,37 @@ public class View extends JPanel implements ChangeListener {
 
             }
         });
+        JPanel panel = new JPanel();
+        panel.setLayout(new FlowLayout());
+        JButton undoButton = new JButton("Undo");
+        undoCounter = 0;
+        undoButton.addActionListener(e12 -> {
+            if (mb.stonesMoved() == true) {
+                if (undoCounter == 3) {
+                    mb.switchTurn();
+                    undoCounter = 0;
+                } else if (undoCounter < 3) {
+                    undoCounter++;
+                    getPreviousBoardState();
+                }
+            }
 
+        });
+        //Confirm Move button
+        JButton confirmButton = new JButton("Confirm");
+        confirmButton.addActionListener(e1 -> mb.switchTurn());
+
+        panel.add(confirmButton);
+        panel.add(undoButton);
+        add(panel, BorderLayout.SOUTH);
+        panel.setSize(100, 50);
+        panel.setVisible(true);
+
+    }
+
+    public void getPreviousBoardState() {
+        mb.setStones(mb.getPrevStones());
+        repaint();
     }
 
     public void setColor(Color color) {
@@ -109,8 +142,8 @@ public class View extends JPanel implements ChangeListener {
 
 //            g2.drawString(Integer.toString(mb.getData()[i]), b.getPitCenterX(i) + 5, b.getPitCenterY(i) + 7);
         }
-        g2.drawString("Player " + mb.whichTurn() + "s turn", 300, 280);
-
+        g2.drawString("Player " + mb.whichTurn() + "s turn", 599, 231);
+        g2.drawString("press confirm to end turn ", 99, 231);
     }
 
     public void stateChanged(ChangeEvent e) {
