@@ -4,6 +4,7 @@ import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.geom.Ellipse2D;
 
 public class View extends JPanel implements ChangeListener {
     private Color color;
@@ -82,11 +83,33 @@ public class View extends JPanel implements ChangeListener {
         BoardVisualizer b = new BoardVisualizer(mb, color);
         b.drawBoard(g);
 
+
         for (int i = 0; i < 14; i++) {
+            if (i < 6) {
+                g2.drawString("A" + (i + 1), b.getPitCenterX(i), b.getPitCenterY(i) + 60);
+                g2.drawString("B" + (6 - i), b.getPitCenterX(i), b.getPitCenterY(i) - 143);
+            }
+            for (int j = 0; j < mb.getData()[i]; j++) {
+                if (mb.getData()[i] == 1) {
+                    g2.draw(new Ellipse2D.Double(b.getPitCenterX(i), b.getPitCenterY(i), 16, 16));
+                } else if (j < 4) {
+                    g2.draw(new Ellipse2D.Double(b.getPitCenterX(i) + (16 * j) - 25, b.getPitCenterY(i) - 32, 16, 16));
+                } else if (j < 8 && j >= 4) {
+                    g2.draw(new Ellipse2D.Double(b.getPitCenterX(i) + (16 * j) - 90, b.getPitCenterY(i) - 16, 16, 16));
+                } else if (j < 12 && j >= 8) {
+                    g2.draw(new Ellipse2D.Double(b.getPitCenterX(i) + (16 * j) - 150, b.getPitCenterY(i), 16, 16));
+                } else if (j < 16 && j >= 12) {
+                    g2.draw(new Ellipse2D.Double(b.getPitCenterX(i) + (16 * j) - 210, b.getPitCenterY(i) + 16, 16, 16));
+                } else if (j < 20 && j >= 16) {
+                    g2.draw(new Ellipse2D.Double(b.getPitCenterX(i) + (16 * j) - 270, b.getPitCenterY(i) + 32, 16, 16));
+                }
 
-            g2.drawString(Integer.toString(mb.getData()[i]), b.getPitCenterX(i) + 5, b.getPitCenterY(i) + 7);
+
+            }
+
+//            g2.drawString(Integer.toString(mb.getData()[i]), b.getPitCenterX(i) + 5, b.getPitCenterY(i) + 7);
         }
-
+        g2.drawString("Player " + mb.whichTurn() + "s turn", 300, 280);
 
     }
 
@@ -98,7 +121,7 @@ public class View extends JPanel implements ChangeListener {
 
 
         final int outerPadding = 15, innerPadding = 20;
-        final int pitWidth = 80, pitHeight = 80;
+        final int pitWidth = 85, pitHeight = 85;
         final int storeWidth = 80, storeHeight = 205;
 
         private MancalaBoard game;
