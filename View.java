@@ -5,6 +5,7 @@ import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.geom.Ellipse2D;
+import java.awt.geom.Point2D;
 
 public class View extends JPanel implements ChangeListener {
 
@@ -32,8 +33,8 @@ public class View extends JPanel implements ChangeListener {
 
                 // loop through all pits in the bottom row
                 for (int pit = 0; pit < 14; ++pit) {
-                    x = board.getPitX(pit);
-                    y = board.getPitY(pit);
+                    x = (int) board.getPitPoint(pit).getX();
+                    y = (int) board.getPitPoint(pit).getY();
 
                     // check if the click was inside the pit area.
                     if (mx > x && mx < x + board.pitWidth && my > y && my < y + board.pitHeight) {
@@ -119,22 +120,22 @@ public class View extends JPanel implements ChangeListener {
 
         for (int i = 0; i < 14; i++) {
             if (i < 6) {
-                g2.drawString("A" + (i + 1), b.getPitCenterX(i), b.getPitCenterY(i) + 90);
-                g2.drawString("B" + (6 - i), b.getPitCenterX(i), b.getPitCenterY(i) - 205);
+                g2.drawString("A" + (i + 1), (int) b.getPitCenterPoint(i).getX(), (int) b.getPitCenterPoint(i).getY() + 90);
+                g2.drawString("B" + (6 - i), (int) b.getPitCenterPoint(i).getX(), (int) b.getPitCenterPoint(i).getY() - 205);
             }
             for (int j = 0; j < mb.getData()[i]; j++) {
                 if (mb.getData()[i] == 1) {
-                    g2.draw(new Ellipse2D.Double(b.getPitCenterX(i), b.getPitCenterY(i), 16, 16));
+                    g2.draw(new Ellipse2D.Double(b.getPitCenterPoint(i).getX(), b.getPitCenterPoint(i).getY(), 16, 16));
                 } else if (j < 4) {
-                    g2.draw(new Ellipse2D.Double(b.getPitCenterX(i) + (16 * j) - 25, b.getPitCenterY(i) - 32, 16, 16));
+                    g2.draw(new Ellipse2D.Double(b.getPitCenterPoint(i).getX() + (16 * j) - 25, b.getPitCenterPoint(i).getY() - 32, 16, 16));
                 } else if (j < 8 && j >= 4) {
-                    g2.draw(new Ellipse2D.Double(b.getPitCenterX(i) + (16 * j) - 90, b.getPitCenterY(i) - 16, 16, 16));
+                    g2.draw(new Ellipse2D.Double(b.getPitCenterPoint(i).getX() + (16 * j) - 90, b.getPitCenterPoint(i).getY() - 16, 16, 16));
                 } else if (j < 12 && j >= 8) {
-                    g2.draw(new Ellipse2D.Double(b.getPitCenterX(i) + (16 * j) - 150, b.getPitCenterY(i), 16, 16));
+                    g2.draw(new Ellipse2D.Double(b.getPitCenterPoint(i).getX() + (16 * j) - 150, b.getPitCenterPoint(i).getY(), 16, 16));
                 } else if (j < 16 && j >= 12) {
-                    g2.draw(new Ellipse2D.Double(b.getPitCenterX(i) + (16 * j) - 210, b.getPitCenterY(i) + 16, 16, 16));
+                    g2.draw(new Ellipse2D.Double(b.getPitCenterPoint(i).getX() + (16 * j) - 210, b.getPitCenterPoint(i).getY() + 16, 16, 16));
                 } else if (j < 20 && j >= 16) {
-                    g2.draw(new Ellipse2D.Double(b.getPitCenterX(i) + (16 * j) - 270, b.getPitCenterY(i) + 32, 16, 16));
+                    g2.draw(new Ellipse2D.Double(b.getPitCenterPoint(i).getX() + (16 * j) - 270, b.getPitCenterPoint(i).getY() + 32, 16, 16));
                 }
 
 
@@ -243,84 +244,62 @@ public class View extends JPanel implements ChangeListener {
         }
 
         /**
-         * Retrieve the X position of a pit
+         * gets the pit location as a point
          *
-         * @param pit a pit number
-         * @return the pit's X position
+         * @param pit
+         * @return Point object
          */
-        public int getPitX(int pit) {
-            int x;
+        public Point2D.Double getPitPoint(int pit) {
+            int x, y;
+
+            //checks if the pit is the store or in second row
+            if (pit <= 6 || pit == 13) {
+                y = outerPadding * 2 + pitHeight;
+            } else {
+                y = outerPadding;
+            }
 
             // check if pit is a store
             if (pit == 6 || pit == 13) {
                 x = outerPadding + storeWidth / 2;
+                if (pit == 6)
+                    x = getSize().width - x;
 
-                // subtract pit x from screen width
-                x = (pit == 6) ? getSize().width - x : x;
             } else {
-
                 // reverse the top row numbers
                 if (pit > 6) pit = -pit + 12;
-
                 // begin with outside padding + mancala
                 x = outerPadding + storeWidth;
-
                 // add padding for each box
                 x += outerPadding * (pit + 1);
-
                 // add boxes
                 x += pit * pitWidth;
             }
 
-            return x;
+            return new Point2D.Double(x, y);
         }
 
         /**
-         * Retrieve the Y position of a pit
+         * gets the pit's center as a point
          *
-         * @param pit a pit number
-         * @return the pit's Y position
+         * @param pit
+         * @return Point object
          */
-        public int getPitY(int pit) {
-
-            // check if a pit is a store or in the second row
-            if (pit <= 6 || pit == 13) {
-                return outerPadding * 2 + pitHeight;
-            }
-
-            return outerPadding;
-        }
-
-        /**
-         * Get the X coordinate in the center of a pit
-         *
-         * @param pit a pit number
-         * @return X position
-         */
-        public int getPitCenterX(int pit) {
-            int x = getPitX(pit);
-
-            if (pit != 6 && pit != 13) {
-                x += pitWidth / 2;
-            }
-
-            return x;
-        }
-
-        /**
-         * Get the Y coordinate in the center of a pit
-         *
-         * @param pit a pit number
-         * @return Y position
-         */
-        public int getPitCenterY(int pit) {
-            int y = getPitY(pit);
-
+        public Point2D.Double getPitCenterPoint(int pit) {
+            double y = getPitPoint(pit).getY();
+            //if not a store
             if (pit != 6 && pit != 13) {
                 y += pitHeight / 2;
             }
 
-            return y;
+            double x = getPitPoint(pit).getX();
+            //if not a store
+            if (pit != 6 && pit != 13) {
+                x += pitWidth / 2;
+            }
+            return new Point2D.Double(x, y);
         }
+
+
     }
 }
