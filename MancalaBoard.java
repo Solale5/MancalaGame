@@ -17,6 +17,19 @@ public class MancalaBoard {
         p2turn = false;
     }
 
+    public void setArray(int i) {
+
+        int[] newStones = new int[14];
+        for (int j = 0; j < newStones.length; j++) {
+            if (j != 6 && j != 13) {
+                newStones[j] = i;
+            }
+        }
+        stones = newStones;
+        l.stateChanged(new ChangeEvent(this));
+
+    }
+
     public void attach(ChangeListener ml) {
         l = ml;
     }
