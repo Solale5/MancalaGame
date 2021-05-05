@@ -7,15 +7,14 @@ import java.awt.event.MouseListener;
 import java.awt.geom.Ellipse2D;
 
 public class View extends JPanel implements ChangeListener {
-    private Color color;
-    final int Padding = 15, padding2 = 30;
-    final int pitWidth = 75, pitHeight = 90;
+
+
     private static int undoCounter;
 
 
     //helps determine if a color has been selected at the start of the game, if it is true, draw the board
     boolean colorSelected;
-
+    private Color color;
 
     MancalaBoard mb;
 
@@ -91,6 +90,7 @@ public class View extends JPanel implements ChangeListener {
 
     }
 
+
     public void getPreviousBoardState() {
         mb.setStones(mb.getPrevStones());
         repaint();
@@ -105,7 +105,7 @@ public class View extends JPanel implements ChangeListener {
     }
 
 
-    protected void paintComponent(Graphics g) {
+    public void paintComponent(Graphics g) {
 
 
         super.paintComponent(g);
@@ -119,8 +119,8 @@ public class View extends JPanel implements ChangeListener {
 
         for (int i = 0; i < 14; i++) {
             if (i < 6) {
-                g2.drawString("A" + (i + 1), b.getPitCenterX(i), b.getPitCenterY(i) + 60);
-                g2.drawString("B" + (6 - i), b.getPitCenterX(i), b.getPitCenterY(i) - 143);
+                g2.drawString("A" + (i + 1), b.getPitCenterX(i), b.getPitCenterY(i) + 90);
+                g2.drawString("B" + (6 - i), b.getPitCenterX(i), b.getPitCenterY(i) - 205);
             }
             for (int j = 0; j < mb.getData()[i]; j++) {
                 if (mb.getData()[i] == 1) {
@@ -140,33 +140,32 @@ public class View extends JPanel implements ChangeListener {
 
             }
 
-//            g2.drawString(Integer.toString(mb.getData()[i]), b.getPitCenterX(i) + 5, b.getPitCenterY(i) + 7);
         }
-        g2.drawString("Player " + mb.whichTurn() + "s turn", 599, 231);
-        g2.drawString("press confirm to end turn ", 99, 231);
+        g2.drawString("Player " + mb.whichTurn() + "s turn", 839, 423);
+        g2.drawString("Press confirm to end turn ", 139, 423);
     }
 
     public void stateChanged(ChangeEvent e) {
         repaint();
     }
 
-    class BoardVisualizer {
+    public class BoardVisualizer {
 
 
-        final int outerPadding = 15, innerPadding = 20;
-        final int pitWidth = 85, pitHeight = 85;
-        final int storeWidth = 80, storeHeight = 205;
+        // TODO: Change variable names and change up how the methods work i guess?
+        final int outerPadding = 21;
+        final int innerPadding = 28;
+        final int pitWidth = 118;
+        final int pitHeight = 118;
+        final int storeWidth = 112;
+        final int storeHeight = 287;
 
-        private MancalaBoard game;
+        private MancalaBoard board;
 
-        /**
-         * Initialize the class
-         *
-         * @param game instance of MancalaGame
-         */
-        public BoardVisualizer(MancalaBoard game, Color c) {
+
+        public BoardVisualizer(MancalaBoard board, Color c) {
             color = c;
-            this.game = game;
+            this.board = board;
 
         }
 
