@@ -80,6 +80,10 @@ public class MancalaBoard {
                     break;
                 }
                 pointer = 0;
+                if(theStones > 0)
+                {
+                    stones[pointer]++;
+                }
             } else {
                 stones[pointer]++;
                 theStones--;
@@ -100,7 +104,7 @@ public class MancalaBoard {
         //Condition if player ends on empty pit of their own -> capture enemy's stones across from pit
         int oppositePit = 12 - pointer;
         if(pointer!=6 && pointer != 13)
-        {
+        { ;
             if((p1turn) && (stones[pointer] == 1) && (stones[oppositePit] != 0))
             {
                 stones[6]+= stones[pointer] + stones[oppositePit];
@@ -119,6 +123,7 @@ public class MancalaBoard {
         needsToConfirm = true;
         return true;
     }
+    
 
     public boolean stonesMoved() {
         return stonesMoved;
@@ -152,16 +157,4 @@ public class MancalaBoard {
         return stones;
     }
 
-    public static void main(String[] args) {
-        MancalaBoard b = new MancalaBoard();
-        for (int i = 0; i < b.stones.length; i++) {
-            System.out.print(b.stones[i]);
-        }
-        System.out.println();
-        b.moveStones(1);
-        for (int i = 0; i < b.stones.length; i++) {
-            System.out.print(b.stones[i]);
-        }
-        System.out.println();
-    }
 }
