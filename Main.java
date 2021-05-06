@@ -12,7 +12,7 @@ public class Main {
     public static void main(String[] args) {
         JFrame start = new JFrame("Mancala Starting Screen");
         start.setLayout(new FlowLayout());
-        JLabel jta = new JLabel("Pick a board color and enter number of stones");
+        JLabel jta = new JLabel("Pick a board color and enter number of stones (3 or 4)");
 
         JTextArea jta2 = new JTextArea("");
         Button blue = new Button("Blue");
@@ -39,8 +39,17 @@ public class Main {
 
 
         black.addActionListener(e -> {
-                    int jml = Integer.parseInt(jta2.getText());
-                    mb.setArray(jml);
+                    try {
+                        int jml = Integer.parseInt(jta2.getText());
+                        if (jml < 3 || jml > 4) {
+                            mb.setArray(4);
+                        } else {
+                            mb.setArray(jml);
+                        }
+
+                    } catch (Exception ex) {
+                        mb.setArray(4);
+                    }
                     BlackBoard b = new BlackBoard();
                     v.setDesign(b);
                     int x = start.getX();
@@ -51,8 +60,18 @@ public class Main {
                 }
         );
         blue.addActionListener(e -> {
-                    int jml = Integer.parseInt(jta2.getText());
-                    mb.setArray(jml);
+                    try {
+                        int jml = Integer.parseInt(jta2.getText());
+                        if (jml < 3 || jml > 4) {
+                            mb.setArray(4);
+                        } else {
+                            mb.setArray(jml);
+                        }
+
+                    } catch (Exception ex) {
+                        mb.setArray(4);
+                    }
+
                     BlueBoard bl = new BlueBoard();
                     v.setDesign(bl);
                     int x = start.getX();
@@ -63,8 +82,17 @@ public class Main {
                 }
         );
         red.addActionListener(e -> {
-                    int jml = Integer.parseInt(jta2.getText());
-                    mb.setArray(jml);
+                    try {
+                        int jml = Integer.parseInt(jta2.getText());
+                        if (jml < 3 || jml > 4) {
+                            mb.setArray(4);
+                        } else {
+                            mb.setArray(jml);
+                        }
+
+                    } catch (Exception ex) {
+                        mb.setArray(4);
+                    }
                     GreenBoard gb = new GreenBoard();
                     v.setDesign(gb);
                     int x = start.getX();
