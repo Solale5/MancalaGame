@@ -13,6 +13,9 @@ public class View extends JPanel implements ChangeListener {
 
     private static int undoCounter;
 
+    public boolean winnerRevealed = false;
+    public int p = 0;
+    public int counter = 0;
 
     //helps determine if a color has been selected at the start of the game, if it is true, draw the board
     boolean colorSelected;
@@ -38,12 +41,10 @@ public class View extends JPanel implements ChangeListener {
                     y = (int) board.getPitPoint(pit).getY();
 
                     // check if the click was inside the pit area.
-                    if (mx > x && mx < x + board.pitWidth && my > y && my < y + board.pitHeight) {
+                    if (mx > x && mx < x + 118 && my > y && my < y + 118) {
                         mb.moveStones(pit);
                     }
                 }
-
-
             }
 
 
@@ -80,6 +81,19 @@ public class View extends JPanel implements ChangeListener {
             }
 
         });
+
+
+        if (mb.gameFinished()) {
+            int p = mb.getWinningPlayer();
+            if (p == 3) {
+                System.out.println("Draw");
+            } else {
+                System.out.println(mb.getData()[6] + " " + mb.getData()[13]);
+                System.out.println(p + " won");
+            }
+        }
+        //g2.drawString("Game has ended, player " + mb.getWinningPlayer() + " has won!", 500, 423);
+
 
         //Confirm move button
         JButton confirmButton = new JButton("Confirm");
@@ -120,7 +134,7 @@ public class View extends JPanel implements ChangeListener {
         //if the color has been selected we draw the game / else draw color selection screen
 
         BoardVisualizer b = new BoardVisualizer(mb, color);
-        b.drawBoard(g);
+        b.drawBoard(g2);
 
 
         Random rand = new Random();
@@ -135,8 +149,6 @@ public class View extends JPanel implements ChangeListener {
                 g2.drawString("B" + (6 - i), (int) b.getPitCenterPoint(i).getX(), (int) b.getPitCenterPoint(i).getY() - 205);
             }
             for (int j = 0; j < mb.getData()[i]; j++) {
-
-
                 if (mb.getData()[i] == 1) {
                     Ellipse2D.Double e = new Ellipse2D.Double(b.getPitCenterPoint(i).getX(), b.getPitCenterPoint(i).getY(), 16, 16);
 
@@ -169,9 +181,26 @@ public class View extends JPanel implements ChangeListener {
                     g2.fill(e);
                     g2.draw(e);
                 }
-
-
             }
+
+        }
+
+
+        if (mb.gameFinished() && !winnerRevealed && (counter < 2)) {
+            g2.setColor(Color.BLACK);
+            p = mb.getWinningPlayer();
+            if (p == 3) {
+                g2.drawString("Game has ended, it's a draw!", 500, 423);
+            } else {
+                g2.drawString("Game has ended, player " + p + " has won!", 500, 423);
+            }
+            counter++;
+            if (counter == 2) {
+                winnerRevealed = true;
+            }
+        }
+
+        if (winnerRevealed) {
 
         }
 
@@ -184,47 +213,20 @@ public class View extends JPanel implements ChangeListener {
     public class BoardVisualizer {
 
 
-        // TODO: Change variable names and change up how the methods work i guess?
-        final int outerPadding = 21;
-        final int innerPadding = 28;
-        final int pitWidth = 118;
-        final int pitHeight = 118;
-        final int storeWidth = 112;
-        final int storeHeight = 287;
-
         private MancalaBoard board;
 
 
         public BoardVisualizer(MancalaBoard board, Color c) {
             color = c;
             this.board = board;
-
         }
 
 
-        /**
-         * Get the size of the board as a Dimension object
-         *
-         * @return
-         */
-        public Dimension getSize() {
-            int height = 2 * (outerPadding + pitHeight) + innerPadding;
-            int width = 6 * (pitWidth + innerPadding) + 2 * (storeWidth + outerPadding);
-            return new Dimension(width, height);
-        }
+        public void drawRow(Graphics2D g, int x, int y) {
 
-        /**
-         * Draw a row of pits
-         *
-         * @param g Graphics object
-         * @param x Beginning X position of row
-         * @param y Beginning Y position of row
-         */
-        protected void drawRow(Graphics g, int x, int y) {
-
-            for (int i = 0; i < 6; ++i) {
-                g.drawOval(x, y, pitWidth, pitHeight);
-                x += pitWidth + outerPadding;
+            for (int i = 0; i < 6; i++) {
+                g.drawOval(x, y, 118, 118);
+                x = x + 139;
             }
         }
 
@@ -233,27 +235,25 @@ public class View extends JPanel implements ChangeListener {
          *
          * @param g Graphics object
          */
-        protected void drawStores(Graphics g) {
-            int round = 30;
-            int resize = 20;
+        public void drawStores(Graphics2D g) {
 
             // begin first mancala at padding position
             g.setColor(color);
             g.drawRoundRect(
-                    outerPadding, outerPadding + resize,
-                    storeWidth, storeHeight - resize * 2,
-                    round, round
+                    21, 41,
+                    112, 247,
+                    30, 30
             );
 
             /* second mancala must be after all six boxes,
              * plus the first mancala, plus padding */
-            int x = outerPadding + storeWidth + 6 * (innerPadding + pitWidth);
+            
 
             g.setColor(color);
             g.drawRoundRect(
-                    x, outerPadding + resize,
-                    storeWidth, storeHeight - resize * 2,
-                    round, round
+                    1015, 41,
+                    112, 247,
+                    30, 30
             );
         }
 
@@ -262,16 +262,15 @@ public class View extends JPanel implements ChangeListener {
          *
          * @param g Graphics object
          */
-        public void drawBoard(Graphics g) {
+        public void drawBoard(Graphics2D g) {
             drawStores(g);
 
-            int rowX = storeWidth + innerPadding * 2;
 
             g.setColor(color);
-            drawRow(g, rowX, outerPadding);
+            drawRow(g, 168, 21);
 
             g.setColor(color);
-            drawRow(g, rowX, outerPadding + pitHeight + innerPadding);
+            drawRow(g, 168, 167);
         }
 
         /**
@@ -285,26 +284,26 @@ public class View extends JPanel implements ChangeListener {
 
             //checks if the pit is the store or in second row
             if (pit <= 6 || pit == 13) {
-                y = outerPadding * 2 + pitHeight;
+                y = 160;
             } else {
-                y = outerPadding;
+                y = 21;
             }
 
             // check if pit is a store
             if (pit == 6 || pit == 13) {
-                x = outerPadding + storeWidth / 2;
+                x = 66;
                 if (pit == 6)
-                    x = getSize().width - x;
+                    x = 1142 - x;
 
             } else {
                 // reverse the top row numbers
                 if (pit > 6) pit = -pit + 12;
                 // begin with outside padding + mancala
-                x = outerPadding + storeWidth;
+                x = 21 + 112;
                 // add padding for each box
-                x += outerPadding * (pit + 1);
+                x += 21 * (pit + 1);
                 // add boxes
-                x += pit * pitWidth;
+                x += pit * 118;
             }
 
             return new Point2D.Double(x, y);
@@ -320,13 +319,13 @@ public class View extends JPanel implements ChangeListener {
             double y = getPitPoint(pit).getY();
             //if not a store
             if (pit != 6 && pit != 13) {
-                y += pitHeight / 2;
+                y += 59;
             }
 
             double x = getPitPoint(pit).getX();
             //if not a store
             if (pit != 6 && pit != 13) {
-                x += pitWidth / 2;
+                x += 59;
             }
             return new Point2D.Double(x, y);
         }

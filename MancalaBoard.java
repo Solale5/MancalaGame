@@ -11,11 +11,13 @@ public class MancalaBoard {
     private boolean p2turn;
     private boolean stonesMoved;
     private boolean needsToConfirm;
+    private boolean boardCleanedUp;
 
     public MancalaBoard() {
         stones = new int[]{4, 4, 4, 4, 4, 4, 0, 4, 4, 4, 4, 4, 4, 0};
         p1turn = true;
         p2turn = false;
+        boardCleanedUp = false;
     }
 
     public void setArray(int i) {
@@ -123,7 +125,90 @@ public class MancalaBoard {
         needsToConfirm = true;
         return true;
     }
-    
+
+    public boolean gameFinished()
+    {
+        boolean gameState = true;
+        boolean p1turn = true;
+        int counter = 0;
+        for(int i = 0; i <  stones.length-1; i++)
+        {
+            if(counter == 6) //Player finished check
+            {
+                if(gameState)
+                {
+                    break;
+                }
+            }
+
+            if(stones[i] != 0)
+            {
+                gameState = false;
+            }
+            counter++;
+
+            if(i > 6 && p1turn)
+            {
+                p1turn = false;
+                counter = 0;
+                gameState = true;
+            }
+        }
+        return gameState;
+    }
+
+    /**
+     * Returns the player that won and moves remaining stones to the end pits
+     * @return winning player
+     */
+    public int getWinningPlayer()
+    {
+        int winner = 0;
+        if(!boardCleanedUp)
+        {
+            cleanUpBoard();
+        }
+        if(stones[6] > stones[13])
+        {
+            winner = 1;
+        }
+        else if(stones[6] < stones[13])
+        {
+            winner = 2;
+        }
+        else if(stones[6] == stones[13])
+        {
+            winner = 3;
+        }
+        return winner;
+    }
+
+    public void cleanUpBoard()
+    {
+        int storage = 0;
+        for(int i = 0; i < stones.length; i++)
+        {
+            if(i == 6)
+            {
+                stones[6] += storage;
+                storage = 0;
+            }
+
+            if(i == 13)
+            {
+                stones[13] += storage;
+                storage = 0;
+            }
+
+            if(i != 6 && i != 13)
+            {
+                storage+= stones[i];
+                stones[i] = 0;
+            }
+        }
+        l.stateChanged(new ChangeEvent(this));
+        boardCleanedUp = true;
+    }
 
     public boolean stonesMoved() {
         return stonesMoved;
