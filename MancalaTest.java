@@ -1,7 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
 
-public class Main {
+public class MancalaTest {
 
 
     /**
