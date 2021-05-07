@@ -222,20 +222,13 @@ public class View extends JPanel implements ChangeListener {
         }
 
 
-        public void drawRow(Graphics2D g, int x, int y) {
-
-            for (int i = 0; i < 6; i++) {
-                g.drawOval(x, y, 118, 118);
-                x = x + 139;
-            }
-        }
-
         /**
-         * Draw the storage spaces
+         * Draw the board pits and stores
          *
          * @param g Graphics object
          */
-        public void drawStores(Graphics2D g) {
+        public void drawBoard(Graphics2D g) {
+
 
             // begin first mancala at padding position
             g.setColor(color);
@@ -247,7 +240,7 @@ public class View extends JPanel implements ChangeListener {
 
             /* second mancala must be after all six boxes,
              * plus the first mancala, plus padding */
-            
+
 
             g.setColor(color);
             g.drawRoundRect(
@@ -255,22 +248,22 @@ public class View extends JPanel implements ChangeListener {
                     112, 247,
                     30, 30
             );
-        }
-
-        /**
-         * Draw the board pits and stores
-         *
-         * @param g Graphics object
-         */
-        public void drawBoard(Graphics2D g) {
-            drawStores(g);
 
 
             g.setColor(color);
-            drawRow(g, 168, 21);
+
+            int x = 168;
+            for (int i = 0; i < 6; i++) {
+                g.drawOval(x, 21, 118, 118);
+                x = x + 139;
+            }
 
             g.setColor(color);
-            drawRow(g, 168, 167);
+            int x2 = 168;
+            for (int i = 0; i < 6; i++) {
+                g.drawOval(x2, 167, 118, 118);
+                x2 = x2 + 139;
+            }
         }
 
         /**
@@ -299,7 +292,7 @@ public class View extends JPanel implements ChangeListener {
                 // reverse the top row numbers
                 if (pit > 6) pit = -pit + 12;
                 // begin with outside padding + mancala
-                x = 21 + 112;
+                x = 133;
                 // add padding for each box
                 x += 21 * (pit + 1);
                 // add boxes
