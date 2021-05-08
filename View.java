@@ -8,10 +8,13 @@ import java.awt.geom.Ellipse2D;
 import java.awt.geom.Point2D;
 import java.util.Random;
 
+/**
+ * @author Kevin Grewal, Solomon Alemu, Jeremy Esch
+ */
 public class View extends JPanel implements ChangeListener {
 
 
-    private static int undoCounter;
+    private int undoCounter;
 
     public boolean winnerRevealed = false;
     public int p = 0;
@@ -23,6 +26,10 @@ public class View extends JPanel implements ChangeListener {
 
     MancalaBoard mb;
 
+    /**
+     * Contructor for View Object
+     * @param board
+     */
     public View(MancalaBoard board) {
         colorSelected = false;
         mb = board;
@@ -30,13 +37,13 @@ public class View extends JPanel implements ChangeListener {
 
         this.addMouseListener(new MouseListener() {
             public void mouseClicked(MouseEvent e) {
-                BoardVisualizer board = new BoardVisualizer(mb, color);
+                BoardView board = new BoardView(mb, color);
                 int x, y;
                 int mx = e.getX();
                 int my = e.getY();
 
                 // loop through all pits in the bottom row
-                for (int pit = 0; pit < 14; ++pit) {
+                for (int pit = 0; pit < 14; pit++) {
                     x = (int) board.getPitPoint(pit).getX();
                     y = (int) board.getPitPoint(pit).getY();
 
@@ -64,6 +71,8 @@ public class View extends JPanel implements ChangeListener {
 
             }
         });
+
+        //undoButton creation
         JPanel panel = new JPanel();
         panel.setLayout(new FlowLayout());
         JButton undoButton = new JButton("Undo");
@@ -92,7 +101,6 @@ public class View extends JPanel implements ChangeListener {
                 System.out.println(p + " won");
             }
         }
-        //g2.drawString("Game has ended, player " + mb.getWinningPlayer() + " has won!", 500, 423);
 
 
         //Confirm move button
@@ -110,21 +118,34 @@ public class View extends JPanel implements ChangeListener {
 
     }
 
-
+    /**
+     * undos the players move
+     */
     public void getPreviousBoardState() {
-        mb.setStones(mb.getPrevStones());
+        mb.setStones();
         repaint();
     }
 
+    /**
+     * sets Color
+     * @param color
+     */
     public void setColor(Color color) {
         this.color = color;
     }
 
+    /**
+     * sets design
+     * @param d
+     */
     public void setDesign(Design d) {
         setColor(d.getColor());
     }
 
-
+    /**
+     * paints component aka the pits
+     * @param g
+     */
     public void paintComponent(Graphics g) {
 
 
@@ -133,11 +154,9 @@ public class View extends JPanel implements ChangeListener {
 
         //if the color has been selected we draw the game / else draw color selection screen
 
-        BoardVisualizer b = new BoardVisualizer(mb, color);
-        b.drawBoard(g2);
+        BoardView b = new BoardView(mb, color);
+        b.drawMancala(g2);
 
-
-        Random rand = new Random();
 
         g2.drawString("Player " + mb.whichTurn() + "s turn", 839, 423);
         g2.drawString("Press confirm to end turn ", 139, 423);
@@ -200,75 +219,77 @@ public class View extends JPanel implements ChangeListener {
             }
         }
 
-        if (winnerRevealed) {
-
-        }
-
     }
 
+    /**
+     * recognizes if state changed in the model
+     * @param e
+     */
     public void stateChanged(ChangeEvent e) {
         repaint();
     }
 
-    public class BoardVisualizer {
+    /**
+     * inner class
+     */
+    public class BoardView {
 
+        private MancalaBoard mb;
 
-        private MancalaBoard board;
-
-
-        public BoardVisualizer(MancalaBoard board, Color c) {
+        /**
+         * Board View Constructor
+         * @param mb
+         * @param c
+         */
+        public BoardView(MancalaBoard mb, Color c) {
             color = c;
-            this.board = board;
+            this.mb = mb;
         }
 
 
         /**
-         * Draw the board pits and stores
-         *
-         * @param g Graphics object
+         * Draws the Mancala Board
+         * @param g2 Graphics object
          */
-        public void drawBoard(Graphics2D g) {
+        public void drawMancala(Graphics2D g2) {
 
 
-            // begin first mancala at padding position
-            g.setColor(color);
-            g.drawRoundRect(
-                    21, 41,
-                    112, 247,
-                    30, 30
-            );
+            // draws first store
+            g2.setColor(color);
+            g2.drawRoundRect(21, 41, 112, 247, 30, 30);
 
-            /* second mancala must be after all six boxes,
-             * plus the first mancala, plus padding */
-
-
-            g.setColor(color);
-            g.drawRoundRect(
-                    1015, 41,
-                    112, 247,
-                    30, 30
-            );
-
-
-            g.setColor(color);
+            //draws second store (placed to the right of all pits)
+            g2.setColor(color);
+            g2.drawRoundRect(1015, 41, 112, 247, 30, 30);
 
             int x = 168;
-            for (int i = 0; i < 6; i++) {
-                g.drawOval(x, 21, 118, 118);
+            int i = 0;
+            int j = 0;
+
+            g2.setColor(color);
+
+            //draws pits for upper row - Player 2
+            while (i < 6)
+            {
+                g2.drawOval(x, 21, 118, 118);
                 x = x + 139;
+                i++;
             }
 
-            g.setColor(color);
-            int x2 = 168;
-            for (int i = 0; i < 6; i++) {
-                g.drawOval(x2, 167, 118, 118);
-                x2 = x2 + 139;
+            //reset x
+            x=168;
+            g2.setColor(color);
+
+            while(j < 6)
+            {
+                g2.drawOval(x, 167, 118, 118);
+                x = x + 139;
+                j++;
             }
         }
 
         /**
          * gets the pit location as a point
-         *
          * @param pit
          * @return Point object
          */
@@ -290,13 +311,16 @@ public class View extends JPanel implements ChangeListener {
 
             } else {
                 // reverse the top row numbers
-                if (pit > 6) pit = -pit + 12;
+                if (pit > 6)
+                {
+                    pit = 12-pit;
+                }
                 // begin with outside padding + mancala
                 x = 133;
                 // add padding for each box
-                x += 21 * (pit + 1);
+                x = x + 21 * (pit + 1);
                 // add boxes
-                x += pit * 118;
+                x = x + pit * 118;
             }
 
             return new Point2D.Double(x, y);
@@ -304,23 +328,18 @@ public class View extends JPanel implements ChangeListener {
 
         /**
          * gets the pit's center as a point
-         *
          * @param pit
          * @return Point object
          */
         public Point2D.Double getPitCenterPoint(int pit) {
-            double y = getPitPoint(pit).getY();
+            double yCoordinate = getPitPoint(pit).getY();
+            double xCoordinate = getPitPoint(pit).getX();
             //if not a store
             if (pit != 6 && pit != 13) {
-                y += 59;
+                yCoordinate = yCoordinate + 59;
+                xCoordinate = xCoordinate + 59;
             }
-
-            double x = getPitPoint(pit).getX();
-            //if not a store
-            if (pit != 6 && pit != 13) {
-                x += 59;
-            }
-            return new Point2D.Double(x, y);
+            return new Point2D.Double(xCoordinate, yCoordinate);
         }
 
 

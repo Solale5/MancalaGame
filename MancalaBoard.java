@@ -1,5 +1,11 @@
+import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import java.awt.*;
+
+/**
+ * @author Kevin Grewal, Solomon Alemu, Jeremy Esch
+ */
 
 public class MancalaBoard {
     ChangeListener l;
@@ -13,6 +19,9 @@ public class MancalaBoard {
     private boolean needsToConfirm;
     private boolean boardCleanedUp;
 
+    /**
+     * Mancala Board constructor
+     */
     public MancalaBoard() {
         stones = new int[]{4, 4, 4, 4, 4, 4, 0, 4, 4, 4, 4, 4, 4, 0};
         p1turn = true;
@@ -20,6 +29,10 @@ public class MancalaBoard {
         boardCleanedUp = false;
     }
 
+    /**
+     * sets initiall array
+     * @param i
+     */
     public void setArray(int i) {
 
         int[] newStones = new int[14];
@@ -33,18 +46,34 @@ public class MancalaBoard {
 
     }
 
+    /**
+     * attachs changeListener to Mancala Board
+     * @param ml
+     */
     public void attach(ChangeListener ml) {
         l = ml;
     }
 
+    /**
+     * returns previous board state
+     * @return integer array
+     */
     public int[] getPrevStones() {
         return prevStones;
     }
 
-    public void setStones(int[] array) {
-        stones = array;
+    /**
+     * sets curr array to prev board state
+     */
+    public void setStones() {
+        stones = prevStones;
     }
 
+    /**
+     * moves the stones
+     * @param slot
+     * @return true or false
+     */
     public boolean moveStones(int slot) {
         if(needsToConfirm)
         {
@@ -126,6 +155,10 @@ public class MancalaBoard {
         return true;
     }
 
+    /**
+     * checks if game is over
+     * @return true or false
+     */
     public boolean gameFinished()
     {
         boolean gameState = true;
@@ -183,6 +216,9 @@ public class MancalaBoard {
         return winner;
     }
 
+    /**
+     * when the game ends, moves all stones from one side to that side’s end mancala
+     */
     public void cleanUpBoard()
     {
         int storage = 0;
@@ -210,15 +246,26 @@ public class MancalaBoard {
         boardCleanedUp = true;
     }
 
+    /**
+     * boolean
+     * @return if stones moves
+     */
     public boolean stonesMoved() {
         return stonesMoved;
     }
 
+    /**
+     * set needs to confirm to given boolean
+     * @param x
+     */
     public void setNeedsToConfirm(boolean x)
     {
         needsToConfirm = x;
     }
 
+    /**
+     * switches the turn from one player to another
+     */
     public void switchTurn() {
         stonesMoved = false;
         //After every turn the player's turn changes
@@ -234,12 +281,33 @@ public class MancalaBoard {
         l.stateChanged(new ChangeEvent(this));
     }
 
+    /**
+     * integer
+     * @return what players turn it is
+     */
     public int whichTurn() {
         return player;
     }
 
+    /**
+     * returns stones array
+     * @return integer array
+     */
     public int[] getData() {
         return stones;
+    }
+
+    /**
+     * Takes in JFrame and visualizes it
+     * @param afterStart
+     */
+    public void afterStartFrame(JFrame afterStart)
+    {
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        afterStart.setSize(new Dimension(screenSize.width * 2 / 3, screenSize.height * 2 / 3));
+        afterStart.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        afterStart.setLocationRelativeTo(null);
+        afterStart.setVisible(true);
     }
 
 }
